@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "relay"
+version = "1"
+description = "Relay: minimal LLM inference server for heterogeneous devices"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Abi Aryan" }]
+dependencies = []
+
+[project.scripts]
+relay = "relay.cli:main"
+
+[tool.setuptools]
+packages = ["relay", "relay.internal", "relay.internal.config", "relay.internal.device", "relay.internal.kv", "relay.internal.metrics", "relay.internal.profile", "relay.internal.queue", "relay.internal.runner", "relay.internal.scheduler", "relay.internal.server", "relay.internal.shard"]
