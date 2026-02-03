@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/relayserve.svg)](https://badge.fury.io/py/relayserve)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Python](https://img.shields.io/pypi/pyversions/relayserve)](https://pypi.org/project/relayserve/)
+
 
 RelayServe is a minimal LLM inference server that adapts to heterogeneous devices.
 
