@@ -4,20 +4,6 @@ RelayServe is a minimal LLM inference server that adapts to heterogeneous device
 
 ## Quick start
 
-Install locally and run as a CLI:
-
-```bash
-pip install -e .
-relayserve
-```
-
-With uv:
-
-```bash
-uv pip install -e .
-relayserve
-```
-
 Install from PyPI:
 
 ```bash
