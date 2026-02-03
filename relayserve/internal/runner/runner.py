@@ -4,7 +4,7 @@ import json
 from typing import Optional
 from urllib import request
 
-from relay.internal.device.registry import Device
+from relayserve.internal.device.registry import Device
 
 
 class Runner:

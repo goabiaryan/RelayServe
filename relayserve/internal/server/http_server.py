@@ -5,8 +5,8 @@ import json
 from typing import Callable, Optional
 from urllib.parse import urlparse
 
-from relay.internal.config.settings import Settings
-from relay.internal.server.app import RelayApp
+from relayserve.internal.config.settings import Settings
+from relayserve.internal.server.app import RelayApp
 
 
 class RelayHandler(BaseHTTPRequestHandler):

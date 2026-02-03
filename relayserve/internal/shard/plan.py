@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Tuple
 
-from relay.internal.device.registry import Device
+from relayserve.internal.device.registry import Device
 
 
 @dataclass(frozen=True)

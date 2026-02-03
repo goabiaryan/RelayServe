@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from relay.cli import main
+from relayserve.cli import main
 
 
 if __name__ == "__main__":

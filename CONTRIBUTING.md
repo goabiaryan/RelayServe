@@ -7,7 +7,7 @@ Thanks for your interest in contributing!
 1. Fork the repo and create a feature branch.
 2. Make your changes with clear commit messages.
 3. Ensure the server still runs:
-   - `python cmd/relay/main.py`
+   - `relayserve`
 4. Open a pull request with a short summary and testing notes.
 
 ## Development tips

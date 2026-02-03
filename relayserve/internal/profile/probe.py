@@ -6,7 +6,7 @@ import shutil
 import subprocess
 from typing import List
 
-from relay.internal.device.registry import Device
+from relayserve.internal.device.registry import Device
 
 
 def probe_devices() -> list[Device]:
@@ -25,14 +25,14 @@ def probe_devices() -> list[Device]:
     devices.extend(_probe_nvidia_smi())
     devices.extend(_probe_macos_system_profiler())
 
-    if os.getenv("RELAY_ENABLE_GPU", "0") == "1":
+    if os.getenv("RELAYSERVE_ENABLE_GPU", "0") == "1":
         devices.append(
             Device(
                 name="stub-gpu",
-                backend=os.getenv("RELAY_GPU_BACKEND", "cuda"),
-                vram_gb=float(os.getenv("RELAY_GPU_VRAM_GB", "12")),
-                tflops=float(os.getenv("RELAY_GPU_TFLOPS", "20")),
-                bandwidth_gbps=float(os.getenv("RELAY_GPU_BW_GBPS", "300")),
+                backend=os.getenv("RELAYSERVE_GPU_BACKEND", "cuda"),
+                vram_gb=float(os.getenv("RELAYSERVE_GPU_VRAM_GB", "12")),
+                tflops=float(os.getenv("RELAYSERVE_GPU_TFLOPS", "20")),
+                bandwidth_gbps=float(os.getenv("RELAYSERVE_GPU_BW_GBPS", "300")),
             )
         )
 
@@ -69,8 +69,8 @@ def _probe_nvidia_smi() -> List[Device]:
                 name=name,
                 backend="cuda",
                 vram_gb=vram_gb,
-                tflops=float(os.getenv("RELAY_GPU_TFLOPS", "20")),
-                bandwidth_gbps=float(os.getenv("RELAY_GPU_BW_GBPS", "300")),
+                tflops=float(os.getenv("RELAYSERVE_GPU_TFLOPS", "20")),
+                bandwidth_gbps=float(os.getenv("RELAYSERVE_GPU_BW_GBPS", "300")),
             )
         )
     return devices
@@ -113,8 +113,8 @@ def _probe_macos_system_profiler() -> List[Device]:
                     name=current_name,
                     backend="metal",
                     vram_gb=current_vram,
-                    tflops=float(os.getenv("RELAY_GPU_TFLOPS", "20")),
-                    bandwidth_gbps=float(os.getenv("RELAY_GPU_BW_GBPS", "300")),
+                    tflops=float(os.getenv("RELAYSERVE_GPU_TFLOPS", "20")),
+                    bandwidth_gbps=float(os.getenv("RELAYSERVE_GPU_BW_GBPS", "300")),
                 )
             )
             current_name = None

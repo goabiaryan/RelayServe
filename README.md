@@ -1,14 +1,10 @@
-# Relay (MVP)
+# RelayServe
 
-Relay is a minimal LLM inference server that adapts to heterogeneous devices.
+RelayServe is a minimal LLM inference server that adapts to heterogeneous devices.
 
 ## Quick start
 
-```bash
-python cmd/relay/main.py
-```
-
-Or install locally and run as a CLI:
+Install locally and run as a CLI:
 
 ```bash
 pip install -e .
@@ -38,19 +34,19 @@ Defaults:
   - `GET /metrics`
   - `GET /debug/shard`
   - `POST /v1/chat/pretty` (colorized text response)
- - Backends: set `RELAY_BACKENDS` to comma-separated llama.cpp servers
+- Backends: set `RELAYSERVE_BACKENDS` to comma-separated llama.cpp servers
 
 ## Environment
 
-- `RELAY_PORT` (default `8080`)
-- `RELAY_MODEL_ID` (default `relay-gguf`)
-- `RELAY_BACKENDS` (comma-separated, e.g. `http://localhost:8081,http://localhost:8082`)
-- `RELAY_BATCH_SIZE` (default `4`)
-- `RELAY_BATCH_WAIT_MS` (default `10`)
-- `RELAY_METRICS_MAX_ITEMS` (default `1000`)
-- `RELAY_TOTAL_LAYERS` (default `32`)
-- `RELAY_PRETTY_JSON` (set `1` for readable JSON responses)
-- `RELAY_PRETTY_DEFAULT` (default `1`, set `0` for JSON by default)
+- `RELAYSERVE_PORT` (default `8080`)
+- `RELAYSERVE_MODEL_ID` (default `relay-gguf`)
+- `RELAYSERVE_BACKENDS` (comma-separated, e.g. `http://localhost:8081,http://localhost:8082`)
+- `RELAYSERVE_BATCH_SIZE` (default `4`)
+- `RELAYSERVE_BATCH_WAIT_MS` (default `10`)
+- `RELAYSERVE_METRICS_MAX_ITEMS` (default `1000`)
+- `RELAYSERVE_TOTAL_LAYERS` (default `32`)
+- `RELAYSERVE_PRETTY_JSON` (set `1` for readable JSON responses)
+- `RELAYSERVE_PRETTY_DEFAULT` (default `1`, set `0` for JSON by default)
 
 ## Spawning llama.cpp backends
 
@@ -61,11 +57,11 @@ export LLAMA_PORTS=8081,8082
 python scripts/spawn_backends.py
 ```
 
-Then run the relay server with:
+Then run the RelayServe server with:
 
 ```bash
-export RELAY_BACKENDS=http://localhost:8081,http://localhost:8082
-python cmd/relay/main.py
+export RELAYSERVE_BACKENDS=http://localhost:8081,http://localhost:8082
+relayserve
 ```
 
 

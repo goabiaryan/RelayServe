@@ -7,14 +7,14 @@ import uuid
 import threading
 import time
 
-from relay.internal.config.settings import Settings
-from relay.internal.device.registry import DeviceRegistry
-from relay.internal.kv.manager import KVCacheManager
-from relay.internal.metrics.collector import MetricsCollector, RequestMetrics
-from relay.internal.profile.probe import probe_devices
-from relay.internal.runner.runner import LlamaServerClient, Runner
-from relay.internal.scheduler.scheduler import Scheduler
-from relay.internal.shard.plan import ShardPlanner
+from relayserve.internal.config.settings import Settings
+from relayserve.internal.device.registry import DeviceRegistry
+from relayserve.internal.kv.manager import KVCacheManager
+from relayserve.internal.metrics.collector import MetricsCollector, RequestMetrics
+from relayserve.internal.profile.probe import probe_devices
+from relayserve.internal.runner.runner import LlamaServerClient, Runner
+from relayserve.internal.scheduler.scheduler import Scheduler
+from relayserve.internal.shard.plan import ShardPlanner
 
 
 @dataclass

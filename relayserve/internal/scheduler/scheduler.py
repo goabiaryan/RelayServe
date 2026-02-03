@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from relay.internal.device.registry import Device, DeviceRegistry
+from relayserve.internal.device.registry import Device, DeviceRegistry
 
 
 class RequestPhase(str, Enum):
