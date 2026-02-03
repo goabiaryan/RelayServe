@@ -12,6 +12,11 @@ license = { text = "Apache-2.0" }
 authors = [{ name = "Abi Aryan" }]
 dependencies = []
 
+[project.urls]
+Homepage = "https://github.com/goabiaryan/RelayServe"
+Repository = "https://github.com/goabiaryan/RelayServe"
+Issues = "https://github.com/goabiaryan/RelayServe/issues"
+
 [project.scripts]
 relayserve = "relayserve.cli:main"
 
