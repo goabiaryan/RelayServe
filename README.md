@@ -12,14 +12,21 @@ Or install locally and run as a CLI:
 
 ```bash
 pip install -e .
-relay
+relayserve
 ```
 
 With uv:
 
 ```bash
 uv pip install -e .
-relay
+relayserve
+```
+
+Install from PyPI:
+
+```bash
+pip install relayserve
+relayserve
 ```
 
 Defaults:
