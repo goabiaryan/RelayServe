@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from typing import Callable, Optional
@@ -7,6 +8,15 @@ from urllib.parse import urlparse
 
 from relayserve.internal.config.settings import Settings
 from relayserve.internal.server.app import RelayApp
+
+
+def _get_request_id(handler: BaseHTTPRequestHandler) -> str:
+    """Read X-Request-ID or Request-Id from request, or generate one."""
+    for key in ("X-Request-ID", "Request-Id", "x-request-id", "request-id"):
+        value = handler.headers.get(key)
+        if value and value.strip():
+            return value.strip()
+    return uuid.uuid4().hex
 
 
 class RelayHandler(BaseHTTPRequestHandler):
@@ -49,13 +59,32 @@ class RelayHandler(BaseHTTPRequestHandler):
             self._send_json(400, {"error": "missing_prompt"})
             return
 
+        request_id = _get_request_id(self)
+        stream = payload.get("stream", False) is True and path == "/v1/chat/completions"
+
+        if stream:
+            self._handle_streaming(prompt, request_id)
+            return
+
         reply_data = self._app.handle_chat(prompt)
         if path == "/v1/chat/pretty" or _prefer_pretty(self, payload):
             self._send_text(200, _format_pretty_text(reply_data))
             return
 
-        response = _format_chat_response(self._app.settings.model_id, prompt, reply_data)
-        self._send_json(200, response)
+        response = _format_chat_response(
+            self._app.settings.model_id, prompt, reply_data, request_id
+        )
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("X-Request-ID", request_id)
+        data = (
+            json.dumps(response, indent=2).encode("utf-8")
+            if self._app.settings.pretty_json
+            else json.dumps(response).encode("utf-8")
+        )
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
 
     def log_message(self, format: str, *args) -> None:
         return
@@ -89,6 +118,64 @@ class RelayHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
+    def _handle_streaming(self, prompt: str, request_id: str) -> None:
+        """Stream chat completion as SSE. Fallback to non-streaming if no backends or on error."""
+        model_id = self._app.settings.model_id
+        self.send_response(200)
+        self.send_header("Content-Type", "text/event-stream")
+        self.send_header("X-Request-ID", request_id)
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("Connection", "keep-alive")
+        self.end_headers()
+        try:
+            if self._app.llama_client.has_backends():
+                for chunk in self._app.llama_client.chat_stream(
+                    prompt, request_id, model_id
+                ):
+                    self.wfile.write(
+                        ("data: " + json.dumps(chunk) + "\n\n").encode("utf-8")
+                    )
+                    self.wfile.flush()
+            else:
+                reply_data = self._app.handle_chat(prompt)
+                reply = str(reply_data.get("reply", "")).strip()
+                chunk = {
+                    "id": request_id,
+                    "object": "chat.completion.chunk",
+                    "model": model_id,
+                    "choices": [
+                        {
+                            "index": 0,
+                            "delta": {"role": "assistant", "content": reply},
+                            "finish_reason": "stop",
+                        }
+                    ],
+                }
+                self.wfile.write(
+                    ("data: " + json.dumps(chunk) + "\n\n").encode("utf-8")
+                )
+                self.wfile.flush()
+        except Exception:
+            chunk = {
+                "id": request_id,
+                "object": "chat.completion.chunk",
+                "model": model_id,
+                "choices": [
+                    {
+                        "index": 0,
+                        "delta": {"content": ""},
+                        "finish_reason": "stop",
+                    }
+                ],
+                "error": "stream_failed",
+            }
+            self.wfile.write(
+                ("data: " + json.dumps(chunk) + "\n\n").encode("utf-8")
+            )
+            self.wfile.flush()
+        self.wfile.write(b"data: [DONE]\n\n")
+        self.wfile.flush()
+
 
 def run_server(settings: Settings, app: RelayApp) -> None:
     handler_factory = _make_handler(app)
@@ -121,13 +208,15 @@ def _extract_prompt(payload: dict) -> str:
     return ""
 
 
-def _format_chat_response(model_id: str, prompt: str, reply_data: dict) -> dict:
+def _format_chat_response(
+    model_id: str, prompt: str, reply_data: dict, request_id: Optional[str] = None
+) -> dict:
     reply = str(reply_data.get("reply", "")).strip()
     meta = reply_data.get("meta", {})
     prompt_tokens = len(prompt.split())
     completion_tokens = len(reply.split())
     return {
-        "id": "relay-chat-1",
+        "id": request_id if request_id else "relay-chat-1",
         "object": "chat.completion",
         "model": model_id,
         "relay": meta,
