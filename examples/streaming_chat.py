@@ -4,10 +4,7 @@ import json
 import os
 import sys
 
-try:
-    from urllib.request import Request, urlopen
-except ImportError:
-    from urllib2 import Request, urlopen
+from urllib.request import Request, urlopen
 
 BASE = os.getenv("RELAYSERVE_EXAMPLE_BASE", "http://127.0.0.1:8080")
 
