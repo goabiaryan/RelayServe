@@ -15,13 +15,6 @@ pip install relayserve
 relayserve
 ```
 
-Or, for development, install from source in editable mode:
-
-```bash
-pip install -e .
-relayserve
-```
-
 ## Multi-backend (llama.cpp)
 
 To run llama.cpp as a backend, use the scripts in the **class1_resources root** (parent of this RelayServe repo). From the class1_resources directory:
