@@ -1,0 +1,12 @@
+default_backend: local
+
+backends:
+  local:
+    type: local
+    url: http://127.0.0.1:8081
+  modal:
+    type: modal
+    url: https://goabiaryan--relay-llama-server-web.modal.run
+  modal_vllm:
+    type: vllm
+    url: https://YOUR_MODAL_VLLM_URL

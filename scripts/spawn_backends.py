@@ -1,3 +1,15 @@
+"""
+Step 3 for Serve_local_model: start llama.cpp server(s) as backend(s).
+
+Usage:
+  export LLAMA_SERVER_PATH=/path/to/llama.cpp/build/bin/llama-server
+  export LLAMA_MODEL_PATH=/path/to/model.gguf
+  export LLAMA_PORTS=8081
+  cd /path/to/class1_resources && python scripts/spawn_backends.py
+
+Leave running; use Ctrl+C to stop. Optional: LLAMA_SERVER_ARGS for extra flags.
+"""
+
 from __future__ import annotations
 
 import os
@@ -31,10 +43,12 @@ def main() -> int:
             str(port),
         ] + extra_args
         print("Starting:", " ".join(shlex.quote(part) for part in cmd))
+        # Run from the directory of the server binary so it can find libs
+        cwd = str(Path(llama_server).parent) if Path(llama_server).is_absolute() else None
         processes.append(
             subprocess.Popen(
                 cmd,
-                cwd=str(Path(model_path).parent),
+                cwd=cwd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
